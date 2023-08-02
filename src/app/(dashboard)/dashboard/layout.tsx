@@ -68,7 +68,7 @@ const Layout = async ({ children }: LayoutProps) => {
                         {" "}
                         <Link
                           href={option.href}
-                          className="text-white hover:text-yellow-400 hover: bg-gray-80 group flex gap-3 rounded-md p-2 text-sm leading-6 font-semibold"
+                          className="group flex gap-3 rounded-md p-2 text-sm leading-6 font-semibold text-white hover:text-yellow-400  active:bg-gray-700"
                         >
                           <span className="text-gray-900 border-gray-200 group-hover:border-gray-900 group-hover:text-gray-900 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[.625rem] font-medium bg-white">
                             <Icon className="h-4 w-4" />

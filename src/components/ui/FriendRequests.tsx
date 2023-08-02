@@ -43,9 +43,12 @@ const FriendRequests: FC<FriendRequestsProps> = ({
         </p>
       ) : (
         fr.map((request) => (
-          <div key={request.ID} className="flex gap-4 items-center">
+          <div
+            key={request.ID}
+            className="text-slate-100 flex gap-4 items-center"
+          >
             <Users />
-            <p className="font-medium text-lg">{request.email}</p>
+            <p className=" font-medium text-lg">{request.email}</p>
             <button
               onClick={() => accept(request.ID)}
               aria-label="Accept friend"
