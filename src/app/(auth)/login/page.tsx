@@ -4,6 +4,7 @@ import { FC, useState } from "react";
 import { signIn } from "next-auth/react";
 import { toast } from "react-hot-toast";
 import { toNamespacedPath } from "path";
+import { FormInput } from "lucide-react";
 interface PageProps {}
 
 const Page: FC<PageProps> = ({}) => {
@@ -23,15 +24,15 @@ const Page: FC<PageProps> = ({}) => {
       <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <div className="w-full flex flex-col items-center max-w-md space-y-8">
           <div className="flex flex-col items-center gap-8">
-            logo
-            <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
+            <FormInput className="text-yellow-300"></FormInput>
+            <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-slate-100">
               Sign in
             </h2>
           </div>
           <Button
             isLoading={isLoading}
             type="button"
-            className="max-w-sm mx-auto w-full"
+            className="max-w-sm mx-auto w-full hover:bg-yellow-300"
             onClick={loginWithGoogle}
           >
             {isLoading ? null : (

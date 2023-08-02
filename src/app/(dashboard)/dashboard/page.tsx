@@ -2,12 +2,12 @@ import { FC } from "react";
 import Button from "@/components/ui/Button";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import { Layout } from "lucide-react";
 
 interface PageProps {}
 
 const Page = async ({}) => {
-  const session = await getServerSession(authOptions);
-  return <pre>{JSON.stringify(session)}</pre>;
+  return;
 };
 
 export default Page;

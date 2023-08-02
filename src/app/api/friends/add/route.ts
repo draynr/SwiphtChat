@@ -25,14 +25,13 @@ export async function POST(req: Request) {
       return new Response("Loner detected.", { status: 400 });
     }
 
-    console.log("---------123");
     //check if the friend is already added.
     const alreadyRequested = (await fetchRedis(
       "sismember",
       `user:${idReq}:incoming_friend_requests`,
       session.user.id
     )) as 0 | 1;
-    console.log("---------456");
+    // console.log("---------456");
     if (alreadyRequested) {
       return new Response(
         "Already sent a friend request. Awaiting for response..",

@@ -1,5 +1,6 @@
 import AddFriend from "@/components/ui/AddFriend";
 import { FC } from "react";
+import Layout from "../layout";
 
 const page: FC = () => {
   return (
