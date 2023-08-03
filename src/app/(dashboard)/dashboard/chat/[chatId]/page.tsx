@@ -1,11 +1,13 @@
 import { fetchRedis } from "@/helpers/redis";
 import { authOptions } from "@/lib/auth";
-import { messagesArrayValidator } from "@/lib/validCheck/message";
+import { Message, messagesArrayValidator } from "@/lib/validCheck/message";
 import { getServerSession } from "next-auth";
 import { notFound } from "next/navigation";
 import { FC } from "react";
 import { db } from "@/lib/db";
 import Image from "next/image";
+import Messages from "@/components/Messages";
+import ChatInput from "@/components/ChatInput";
 
 interface PageProps {
   params: {
@@ -16,7 +18,7 @@ async function getChatMessage(chatId: string) {
   try {
     const result: string[] = await fetchRedis(
       "zrange",
-      `chat:${chatId}:msgs`,
+      `chat:${chatId}:messages`,
       0,
       -1
     );
@@ -38,11 +40,12 @@ const page = async ({ params }: PageProps) => {
     notFound();
   }
   const partner = user.id === user1 ? user2 : user1;
+  console.log(chatId);
   const partnerStruct = (await db.get(`user:${partner}`)) as User;
-  const initMessages = await getChatMessage(chatId);
+  const initMessages = (await getChatMessage(chatId)) as Message[];
 
   return (
-    <div className="flex-1 justify-between flex flex-col h-4 max-h-[calc(100vh-6rem)]">
+    <div className="flex-1 justify-between flex flex-col h-full max-h-[calc(100vh-6rem)]">
       <div className="flex sm:items-center justify-between py-3 border-b-2 border-gray-700">
         <div className="relative flex items-center space-x-4 px-4">
           <div className="relative">
@@ -62,12 +65,20 @@ const page = async ({ params }: PageProps) => {
                 {partnerStruct.name}
               </span>
             </div>
-            <span className="text-sm text-slate-200">
+            <span className="text-sm text-slate-300">
               {partnerStruct.email}
             </span>
           </div>
         </div>
       </div>
+      <Messages
+        initMessages={initMessages}
+        sessionId={session.user.id}
+        sessionImg={session.user.image}
+        partner={partnerStruct}
+        chatId={chatId}
+      />
+      <ChatInput partner={partnerStruct} chatId={chatId} />
     </div>
   );
 };

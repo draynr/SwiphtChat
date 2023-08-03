@@ -56,10 +56,10 @@ const AddFriend: FC<AddFriendProps> = ({}) => {
         <input
           {...register("email")}
           type="text"
-          className="block w-full rounded-md border-0 py-1.5 text-black-100 shadow-sm ring-1 ring-inset ring-gray-900 placeholder:text-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          className="block w-full rounded-md border-0 py-1.5 text-black-100 shadow-sm ring-1 ring-inset ring-gray-900 placeholder:text-gray-300 focus:ring-2 focus:ring-inset focus:ring-gray-500 sm:text-sm sm:leading-6"
           placeholder="bobsmith@hotmail.com"
         />
-        <Button>Add</Button>
+        <Button className="hover:bg-yellow-400">Add</Button>
       </div>
       <p className="mt-1 text-sm text-red-600"> {errors.email?.message}</p>
       {successState ? (

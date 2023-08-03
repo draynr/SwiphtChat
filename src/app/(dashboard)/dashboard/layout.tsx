@@ -80,7 +80,7 @@ const Layout = async ({ children }: LayoutProps) => {
                   })}
                   <li>
                     <FriendRequestSideBar
-                      sessionId={session.user.id}
+                      sessionID={session.user.id}
                       initUnseenRequests={reqCount}
                     />
                   </li>
@@ -111,7 +111,9 @@ const Layout = async ({ children }: LayoutProps) => {
           </li>
         </nav>
       </div>
-      {children}
+      <aside className="max-h-screen container py-16 md:py-12 w-full">
+        {children}
+      </aside>
     </div>
   );
 };

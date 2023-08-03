@@ -1,12 +1,20 @@
 "use client";
-import { chatHrefConstructor } from "@/lib/utils";
+
+import { pusherClient } from "@/lib/pusher";
+import { chatHrefConstructor, toPusherKey } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { FC, useEffect } from "react";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
+import UnseenMsg from "./ui/UnseenMsg";
 
 interface SidebarChatListProps {
   friends: User[];
   sessionID: string;
+}
+interface ExtendedMsg extends Message {
+  senderImg: string;
+  senderName: string;
 }
 
 const SidebarChatList: FC<SidebarChatListProps> = ({ friends, sessionID }) => {
@@ -14,12 +22,52 @@ const SidebarChatList: FC<SidebarChatListProps> = ({ friends, sessionID }) => {
   const router = useRouter();
   const path = usePathname();
   useEffect(() => {
+    pusherClient.subscribe(toPusherKey(`user:${sessionID}:chats`));
+
+    pusherClient.subscribe(toPusherKey(`user:${sessionID}:friends`));
+
+    const friendHandler = () => {
+      router.refresh();
+    };
+    const chatHandler = (msg: ExtendedMsg) => {
+      const Notify =
+        path !==
+        `/dashboard/chat/${chatHrefConstructor(sessionID, msg.senderId)}`;
+      if (!Notify) {
+        return;
+      }
+      toast.custom((noti) => (
+        <UnseenMsg
+          noti={noti}
+          sessionID={sessionID}
+          senderName={msg.senderName}
+          senderImage={msg.senderImg}
+          senderID={msg.senderId}
+          senderMsg={msg.text}
+        />
+      ));
+      setUnseenMsg((prev) => [...prev, msg]);
+    };
+
+    pusherClient.bind("new_message", chatHandler);
+    pusherClient.bind("new_friend", friendHandler);
+
+    return () => {
+      pusherClient.unsubscribe(toPusherKey(`user:${sessionID}:chats`));
+
+      pusherClient.unsubscribe(toPusherKey(`user:${sessionID}:friends`));
+
+      pusherClient.unbind("new_message", chatHandler);
+      pusherClient.unbind("new_friend", friendHandler);
+    };
+  });
+  useEffect(() => {
     if (path?.includes("chat")) {
       setUnseenMsg((prev) => {
         return prev.filter((msg) => !path.includes(msg.senderId));
       });
     }
-  }, [path]);
+  }, [path, sessionID, router]);
   return (
     <ul role="list" className="max-h[25rem] overflow-y-auto -mx-2 space-y-1">
       {friends.sort().map((friend) => {
@@ -37,7 +85,7 @@ const SidebarChatList: FC<SidebarChatListProps> = ({ friends, sessionID }) => {
             >
               {friend.name}
               {unseenMsgCnt > 0 ? (
-                <div className="bg-slate-100 font-medium text-xs text-white h-4 w-4 rounded-full flex justify-center items-center">
+                <div className="bg-yellow-300 font-medium text-xs text-black h-4 w-4 rounded-full flex justify-center items-center">
                   {unseenMsgCnt}
                 </div>
               ) : null}
